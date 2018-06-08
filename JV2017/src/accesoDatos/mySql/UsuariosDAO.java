@@ -101,6 +101,9 @@ public class UsuariosDAO  implements OperacionesDAO {
 			crearTablaUsuarios();
 			crearTablaEquivalId();
 		}
+	//Crea el tablemodel y el buffer de objetos para Usuarios.
+		tmUsuarios = new DefaultTableModel();
+		bufferObjetos = new ArrayList<Object>();
 	}
 
 	/**
@@ -145,7 +148,9 @@ public class UsuariosDAO  implements OperacionesDAO {
 	/**
 	 *  Método para generar datos predeterminados.
 	 */
-	private void cargarPredeterminados() {
+	private void cargarPredeterminados() throws SQLException, DatosException {
+		
+		
 		try {
 			String nombreUsr = Configuracion.get().getProperty("usuario.admin");
 			String password = Configuracion.get().getProperty("usuario.passwordPredeterminada");	
@@ -162,7 +167,7 @@ public class UsuariosDAO  implements OperacionesDAO {
 					new Fecha(2005, 05, 05), new ClaveAcceso(password), RolUsuario.INVITADO);
 			alta(usrPredeterminado);
 		} 
-		catch (DatosException | ModeloException e) {
+		catch (ModeloException e) { e.printStackTrace();
 		}
 	}
 
@@ -189,19 +194,29 @@ public class UsuariosDAO  implements OperacionesDAO {
 	 */
 	@Override
 	public Usuario obtener(String id) throws DatosException {
-		id = obtenerEquivalencia(id);
-		ObjectSet <Usuario> result;
-		Query consulta = db.query();
-		consulta.constrain(Usuario.class);
-		consulta.descend("idUsr").constrain(id);
-		result = consulta.execute();
-		if (result.size() > 0) {
-			return result.get(0);
-		}	
-		else {
-			throw new DatosException("Obtener: "+ id + " no existe");
-		}				
+		try {
+			rsUsuarios = sentenciaUsr.executeQuery("SELECT * FROM usuarios WHERE IdUsr = " + IdUsr + "");
+			//Establece columnas de filas.
+			estableceColumnasModelo();
+
+			//Borrado previo de filas
+			borraFilasModelo();
+
+			//Volcado desde el resulSet
+			rellenaFilasModelo();
+
+			//Actualiza buffer de objetos.
+			sincronizaBufferObjetos();
+			if (bufferObjetos.size() > 0) {
+				return(Usuario) bufferObjetos.get(0);
+			}
+		}
+		catch (SQLException e) {
+			thows new DatosException("(OBTENER) El usuario: " + IdUsr + "no exite.");
+		}
+		return null;
 	}
+
 
 	/**
 	 * Obtiene todos los usuarios almacenados.
