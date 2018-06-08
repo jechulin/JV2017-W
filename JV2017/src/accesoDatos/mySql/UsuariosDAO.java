@@ -6,7 +6,7 @@
  * @since: prototipo2.2
  * @source: UsuariosDAO.java 
  * @version: 2.2 - 2018/06/07 
- * @author: alejandro
+ * @author: Alejandro, Francisco
  */
 
 package accesoDatos.mySql;
@@ -103,6 +103,45 @@ public class UsuariosDAO  implements OperacionesDAO {
 		}
 	}
 
+	/**
+	 *  Método para crear la tabla usuarios en la base de datos
+	 *  @throws SQLException
+	 */
+	private void crearTablaUsuarios() throws SQLException {
+		//Realizamos la conexión a la BD.
+		Statement s = db.createStatement();
+
+		//Creamos la tabla Usuarios
+		s.executeUpdate("CREATE TABLE usuarios ("
+			+ "IdUsr VARCHAR(5) NOT NULL,"
+			+ "NIF VARCHAR(9) NOT NULL,"
+			+ "Nombre VARCHAR(50) NOT NULL,"
+			+ "Apellidos VARCHAR(100) NOT NULL,"
+			+ "Calle VARCHAR(50) NOT NULL,"
+			+ "Numero VARCHAR(5) NOT NULL,"
+			+ "CP INT(5) NOT NULL,"
+			+ "Poblacion VARCHAR(50) NOT NULL,"
+			+ "Correo VARCHAR(100) NOT NULL,"
+			+ "FechaNacimiento DATE NOT NULL,"
+			+ "FechaAlta DATE NOT NULL,"
+			+ "ClaveAcceso VARCHAR(20) NOT NULL,"
+			+ "Rol VARCHAR(20) NOT NULL,"
+			+ "PRIMARY KEY(IdUsr));");
+	}
+
+	/**
+	 *  Método para crear la tabla de equivalencia en la base de datos
+	 *  @throws SQLException
+	 */
+
+	private void crearTablaEquivalId() throws SQLException {
+		Statement s = db.createStatement();
+
+		s.executeUpdate("CREATE TABLE equivalid ("
+			+ "equival VARCHAR(50) NOT NULL,"
+			+ "IdUsr VARCHAR(5) NOT NULL,"
+			+ "PRIMARY KEY(equival));");
+	}
 	/**
 	 *  Método para generar datos predeterminados.
 	 */
