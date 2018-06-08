@@ -1,0 +1,17 @@
+/** Proyecto: Juego de la vida.
+ *  Resuelve todos los aspectos relacionados con la presentación 
+ *  de una simulacion.
+ *  @author: jsg
+ */
+
+package accesoUsr.swing;
+
+import java.io.Console;
+import java.util.Scanner;
+
+import accesoUsr.OperacionesVista;
+import accesoUsr.consola.control.ControlSimulacion;
+
+public class VistaSimulacion implements OperacionesVista {
+
+}
